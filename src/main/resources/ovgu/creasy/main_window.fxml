@@ -48,8 +48,9 @@
                      </accelerator></MenuItem>
                   <Menu fx:id="exportMenu" disable="true" mnemonicParsing="false" text="Export">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#onMenuExportPDFAction" text="PDF" />
+                        <MenuItem mnemonicParsing="false" onAction="#onMenuExportPDFAction" text="PDF" />
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExportSVGAction" text="SVG" />
+                        <MenuItem mnemonicParsing="false" onAction="#onMenuExportSeparateSVGAction" text="Separate SVG" />
                     </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />

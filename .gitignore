@@ -34,3 +34,8 @@ target/
 *.exe
 
 dependency-reduced-pom.xml
+
+# mine
+javafx-sdk-*/
+my_examples/
+history/

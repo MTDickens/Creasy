@@ -1,5 +1,15 @@
 package ovgu.creasy.ui.windows;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -7,10 +17,26 @@ import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,6 +51,8 @@ import ovgu.creasy.origami.basic.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 import ovgu.creasy.ui.elements.CreasePatternCanvas;
 import ovgu.creasy.ui.elements.ResizableCanvas;
+import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_HEIGHT;
+import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_WIDTH;
 import ovgu.creasy.util.CreasePatternEditor;
 import ovgu.creasy.util.TextLogger;
 import ovgu.creasy.util.exporter.cp.PDFCreasePatternExporter;
@@ -32,12 +60,7 @@ import ovgu.creasy.util.exporter.cp.PNGCreasePatternExporter;
 import ovgu.creasy.util.exporter.cp.SVGCreasePatternExporter;
 import ovgu.creasy.util.exporter.history.PDFHistoryExporter;
 import ovgu.creasy.util.exporter.history.SVGHistoryExporter;
-
-import java.io.*;
-import java.util.*;
-
-import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_HEIGHT;
-import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_WIDTH;
+import ovgu.creasy.util.exporter.history.SVGHistorySeparateExporter;
 
 public class MainWindow {
 
@@ -443,6 +466,21 @@ public class MainWindow {
             }
         }
     }
+
+    // MainWindow.java
+    @FXML
+    private void onMenuExportSeparateSVGAction() {
+        SVGHistorySeparateExporter exporter = new SVGHistorySeparateExporter(historyCanvasList);
+        var file = exporter.open(mainCanvas.getScene().getRoot()); // 让用户选 base name
+        if (file.isPresent()) {
+            if (exporter.export(file.get())) {
+                TextLogger.logText("Saved separate SVGs successfully", log);
+            } else {
+                TextLogger.logText("Error while exporting to separate SVG", log);
+            }
+        }
+    }
+
 
     /**
      * Opens Oripa with the folded 3d model,
