@@ -51,6 +51,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExportPDFAction" text="PDF" />
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExportSVGAction" text="SVG" />
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExportSeparateSVGAction" text="Separate SVG" />
+                        <MenuItem mnemonicParsing="false" onAction="#onMenuExportSeparatePDFAction" text="Separate PDF" />
                     </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />

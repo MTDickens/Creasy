@@ -59,6 +59,7 @@ import ovgu.creasy.util.exporter.cp.PDFCreasePatternExporter;
 import ovgu.creasy.util.exporter.cp.PNGCreasePatternExporter;
 import ovgu.creasy.util.exporter.cp.SVGCreasePatternExporter;
 import ovgu.creasy.util.exporter.history.PDFHistoryExporter;
+import ovgu.creasy.util.exporter.history.PDFHistorySeparateExporter;
 import ovgu.creasy.util.exporter.history.SVGHistoryExporter;
 import ovgu.creasy.util.exporter.history.SVGHistorySeparateExporter;
 
@@ -467,7 +468,6 @@ public class MainWindow {
         }
     }
 
-    // MainWindow.java
     @FXML
     private void onMenuExportSeparateSVGAction() {
         SVGHistorySeparateExporter exporter = new SVGHistorySeparateExporter(historyCanvasList);
@@ -477,6 +477,19 @@ public class MainWindow {
                 TextLogger.logText("Saved separate SVGs successfully", log);
             } else {
                 TextLogger.logText("Error while exporting to separate SVG", log);
+            }
+        }
+    }
+
+    @FXML
+    private void onMenuExportSeparatePDFAction() {
+        PDFHistorySeparateExporter exporter = new PDFHistorySeparateExporter(historyCanvasList);
+        var file = exporter.open(mainCanvas.getScene().getRoot()); // 让用户选 base name
+        if (file.isPresent()) {
+            if (exporter.export(file.get())) {
+                TextLogger.logText("Saved separate PDFs successfully", log);
+            } else {
+                TextLogger.logText("Error while exporting to separate PDF", log);
             }
         }
     }

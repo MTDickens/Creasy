@@ -38,5 +38,5 @@ dependency-reduced-pom.xml
 # mine
 javafx-sdk-*/
 my_examples/
-history/
-history_jsons/
+/history/
+/history_jsons/
