@@ -494,6 +494,19 @@ public class MainWindow {
         }
     }
 
+    @FXML
+    private void onMenuExportSeparatePlainPDFAction() {
+        PDFHistorySeparateExporter exporter = new PDFHistorySeparateExporter(historyCanvasList, false);
+        var file = exporter.open(mainCanvas.getScene().getRoot()); // 让用户选 base name
+        if (file.isPresent()) {
+            if (exporter.export(file.get())) {
+                TextLogger.logText("Saved separate plain PDFs successfully", log);
+            } else {
+                TextLogger.logText("Error while exporting to separate plain PDF", log);
+            }
+        }
+    }
+
 
     /**
      * Opens Oripa with the folded 3d model,
