@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -32,6 +33,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.util.Duration;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -97,6 +99,7 @@ public class MainWindow {
     private List<CreasePatternCanvas> historyCanvasList;
     private List<CreasePatternCanvas> stepsCanvasList;
     private HashMap<CreasePatternCanvas, Separator> pairs;
+    private final Map<CreasePattern, Map<CreasePattern, CreasePattern>> diffCache = new WeakHashMap<>();
 
     private boolean wasSaved = false;
     private boolean adding = false;
@@ -674,8 +677,24 @@ public class MainWindow {
 
             String patterns = step.getSourcePatternsLabel();
             String prefix = step.getSourcePatterns().size() == 1 ? "Pattern: " : "Patterns: ";
-            Tooltip.install(canvas, new Tooltip(prefix + patterns));
+            Tooltip tooltip = (Tooltip) canvas.getProperties().get("patternTooltip");
+            if (tooltip == null) {
+                tooltip = new Tooltip();
+                tooltip.setShowDelay(Duration.millis(75));
+                tooltip.setHideDelay(Duration.millis(50));
+                Tooltip.install(canvas, tooltip);
+                canvas.getProperties().put("patternTooltip", tooltip);
+            }
+            tooltip.setText(prefix + patterns);
         }
+    }
+
+    private CreasePattern getCachedDiff(CreasePattern from, CreasePattern to) {
+        if (from == null || to == null) {
+            return null;
+        }
+        Map<CreasePattern, CreasePattern> perFrom = diffCache.computeIfAbsent(from, _k -> new WeakHashMap<>());
+        return perFrom.computeIfAbsent(to, _k -> from.getDifference(to));
     }
 
     private void drawHistory(CreasePattern cp, VBox history, Label historyLabel) {
@@ -720,8 +739,10 @@ public class MainWindow {
             }
             c.setCursor(Cursor.HAND);
 
-            CreasePattern diff = mainCanvas.getCp().getDifference(c.getCp());
-            diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+            CreasePattern diff = getCachedDiff(mainCanvas.getCp(), c.getCp());
+            if (diff != null) {
+                diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+            }
         });
 
         c.setOnMouseExited(mouseEvent -> {
