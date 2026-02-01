@@ -1,24 +1,26 @@
 package ovgu.creasy.origami;
 
-import ovgu.creasy.origami.basic.Crease;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import ovgu.creasy.origami.basic.Crease;
+
 public class KnownPatterns {
+
     public static final List<SimplificationPattern> allPatterns = new ArrayList<>();
     public static final SimplificationPattern insideReverseFold = new SimplificationPattern(
-        "insideReverseFold",
-        SimplificationPattern.VertexType.INTERNAL,
-        SimplificationPattern.VertexType.BORDER,
-        SimplificationPattern.VertexType.BORDER,
-        SimplificationPattern.VertexType.BORDER,
-        SimplificationPattern.VertexType.BORDER);
+            "insideReverseFold",
+            SimplificationPattern.VertexType.INTERNAL,
+            SimplificationPattern.VertexType.BORDER,
+            SimplificationPattern.VertexType.BORDER,
+            SimplificationPattern.VertexType.BORDER,
+            SimplificationPattern.VertexType.BORDER);
+
     static {
         insideReverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
         insideReverseFold.addPatternEdge(0, 2, Crease.Type.VALLEY);
         insideReverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
-        insideReverseFold.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
+        insideReverseFold.addSimplifiedEdge(0, 4, Crease.Type.MOUNTAIN);
         allPatterns.add(insideReverseFold);
     }
     public static final SimplificationPattern outsideReverseFold = new SimplificationPattern(
