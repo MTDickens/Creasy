@@ -72,9 +72,18 @@ public class ExtendedCreasePattern {
     }
 
     public static List<DiagramStep> getSteps(List<ExtendedCreasePattern> eCPs) {
-        Set<DiagramStep> possibleSteps = new HashSet<>();
-        eCPs.forEach(cp -> possibleSteps.addAll(cp.possibleSteps()));
-        return possibleSteps.stream().toList();
+        Map<DiagramStep, DiagramStep> merged = new LinkedHashMap<>();
+        for (ExtendedCreasePattern ecp : eCPs) {
+            for (DiagramStep step : ecp.possibleSteps()) {
+                DiagramStep existing = merged.get(step);
+                if (existing == null) {
+                    merged.put(step, step);
+                } else {
+                    existing.mergeSourcesFrom(step);
+                }
+            }
+        }
+        return merged.values().stream().toList();
     }
 
     public List<DiagramStep> possibleSteps() {
@@ -93,31 +102,40 @@ public class ExtendedCreasePattern {
             removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
                     .collect(Collectors.toList()));
         }
-        List<CreasePattern> newcps = new ArrayList<>();
+        Map<CreasePattern, Set<String>> candidates = new LinkedHashMap<>();
         for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
             CreasePattern newcp = this.cp.copy();
             removablePathList.forEach(p -> p.getCreases().forEach(newcp::removeCrease));
             newcp.removeAllLinearPoints();
-            newcps.add(newcp);
+            candidates.computeIfAbsent(newcp, _k -> new LinkedHashSet<>()).add("simple fold");
         }
 
         for (SimplificationPattern pattern : KnownPatterns.allPatterns) {
             List<SimplificationPattern.Match> matches = pattern.matches(this);
             for (SimplificationPattern.Match match : matches) {
-                newcps.add(pattern.simplify(this, match));
+                CreasePattern simplified = pattern.simplify(this, match);
+                String label = pattern.getName();
+                if (match.isInverted()) {
+                    label += " (inverted)";
+                }
+                candidates.computeIfAbsent(simplified, _k -> new LinkedHashSet<>()).add(label);
             }
         }
 
         FoldabilityChecker foldabilityChecker = new FoldabilityChecker();
 
-        newcps.stream().distinct().forEach(cp -> {
+        candidates.forEach((cp, sourcePatterns) -> {
             CreasePattern cp2 = new CreasePattern();
             cp.getCreases().forEach(cp2::addCrease);
             cp2.removeAllLinearPoints();
             CreasePatternInterface cpOripa = OripaTypeConverter.convertToOripaCp(cp2);
             OrigamiModel model = new OrigamiModelFactory().createOrigamiModel(cpOripa, cpOripa.getPaperSize());
             if (foldabilityChecker.testLocalFlatFoldability(model)) {
-                steps.add(new DiagramStep(this.toCreasePattern(), cp2));
+                DiagramStep step = new DiagramStep(this.toCreasePattern(), cp2);
+                for (String source : sourcePatterns) {
+                    step.addSourcePattern(source);
+                }
+                steps.add(step);
             }
         });
         return steps;

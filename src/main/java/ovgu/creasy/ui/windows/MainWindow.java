@@ -29,6 +29,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
@@ -668,8 +669,12 @@ public class MainWindow {
     private void drawSteps(List<DiagramStep> steps) {
         for (int i = 0; i < steps.size(); i++) {
             DiagramStep step = steps.get(i);
-            step.to.drawOnCanvas(stepsCanvasList.get(i),
-                    0.4, 0.4);
+            CreasePatternCanvas canvas = stepsCanvasList.get(i);
+            step.to.drawOnCanvas(canvas, 0.4, 0.4);
+
+            String patterns = step.getSourcePatternsLabel();
+            String prefix = step.getSourcePatterns().size() == 1 ? "Pattern: " : "Patterns: ";
+            Tooltip.install(canvas, new Tooltip(prefix + patterns));
         }
     }
 

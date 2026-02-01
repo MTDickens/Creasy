@@ -9,6 +9,7 @@ import ovgu.creasy.origami.basic.CreasePattern;
 import java.util.*;
 
 public class SimplificationPattern {
+    private final String name;
     private final List<Edge> pattern = new ArrayList<>();
     private final List<Edge> simplified = new ArrayList<>();
     private final Map<Integer, List<Edge>> patternOutgoingEdges = new HashMap<>();
@@ -88,10 +89,26 @@ public class SimplificationPattern {
         private void addEdge(Edge e, ExtendedCrease crease) {
             edges.put(e, crease);
         }
+
+        public boolean isInverted() {
+            return inverted;
+        }
     }
 
     public SimplificationPattern(VertexType... vertexTypes) {
+        this(null, vertexTypes);
+    }
+
+    public SimplificationPattern(String name, VertexType... vertexTypes) {
+        this.name = name;
         this.vertexTypes = Arrays.asList(vertexTypes);
+    }
+
+    public String getName() {
+        if (name == null || name.isBlank()) {
+            return "unnamed pattern";
+        }
+        return name;
     }
 
     public void addPatternEdge(int from, int to, Crease.Type type) {

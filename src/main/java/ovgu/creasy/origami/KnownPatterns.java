@@ -8,6 +8,7 @@ import java.util.List;
 public class KnownPatterns {
     public static final List<SimplificationPattern> allPatterns = new ArrayList<>();
     public static final SimplificationPattern insideReverseFold = new SimplificationPattern(
+        "insideReverseFold",
         SimplificationPattern.VertexType.INTERNAL,
         SimplificationPattern.VertexType.BORDER,
         SimplificationPattern.VertexType.BORDER,
@@ -21,6 +22,7 @@ public class KnownPatterns {
         allPatterns.add(insideReverseFold);
     }
     public static final SimplificationPattern outsideReverseFold = new SimplificationPattern(
+            "outsideReverseFold",
             SimplificationPattern.VertexType.INTERNAL,
             SimplificationPattern.VertexType.BORDER,
             SimplificationPattern.VertexType.BORDER,
@@ -35,6 +37,7 @@ public class KnownPatterns {
         allPatterns.add(outsideReverseFold);
     }
     public static final SimplificationPattern swivelFold1 = new SimplificationPattern(
+            "swivelFold1",
             SimplificationPattern.VertexType.INTERNAL,
             SimplificationPattern.VertexType.BORDER,
             SimplificationPattern.VertexType.BORDER,
@@ -50,6 +53,7 @@ public class KnownPatterns {
         allPatterns.add(swivelFold1);
     }
     public static final SimplificationPattern swivelFold2 = new SimplificationPattern(
+            "swivelFold2",
             SimplificationPattern.VertexType.INTERNAL,
             SimplificationPattern.VertexType.BORDER,
             SimplificationPattern.VertexType.BORDER,
