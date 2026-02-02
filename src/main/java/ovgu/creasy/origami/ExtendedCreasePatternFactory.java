@@ -1,5 +1,17 @@
 package ovgu.creasy.origami;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.vecmath.Vector2d;
+
 import oripa.domain.cptool.LineAdder;
 import oripa.domain.creasepattern.CreasePatternFactory;
 import oripa.domain.creasepattern.CreasePatternInterface;
@@ -18,12 +30,8 @@ import ovgu.creasy.origami.basic.Crease;
 import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.origami.oripa.OripaTypeConverter;
 
-import javax.vecmath.Vector2d;
-import java.util.*;
-import java.util.stream.Collectors;
-
 public class ExtendedCreasePatternFactory {
-    Random r = new Random();
+    private final Random r = new Random(42);
 
     public List<ExtendedCreasePattern> createRandomizedEcps(CreasePattern cp, int amount) {
         List<ExtendedCreasePattern> ecps = new ArrayList<>();

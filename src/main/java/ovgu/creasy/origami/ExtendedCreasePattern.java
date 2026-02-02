@@ -26,6 +26,7 @@ import ovgu.creasy.origami.oripa.OripaTypeConverter;
  * of the paper (pages 28 - 36)
  */
 public class ExtendedCreasePattern {
+    private static final boolean DEBUG_STEPS = Boolean.getBoolean("creasy.debug.steps");
 
     private Set<Vertex> vertices;
     private Set<ExtendedCrease> creases;
@@ -136,6 +137,24 @@ public class ExtendedCreasePattern {
 
         FoldabilityChecker foldabilityChecker = new FoldabilityChecker();
 
+        if (DEBUG_STEPS) {
+            System.out.println("[creasy.debug.steps] ECP candidates=" + candidates.size()
+                    + " (simpleFoldCandidates=" + removableCreases.size()
+                    + ", patternMatches="
+                    + (candidates.size() - removableCreases.size())
+                    + "), inputCpCreases=" + this.cp.getCreases().size()
+                    + ", inputCpPoints=" + this.cp.getPoints().size());
+            int i = 0;
+            for (Map.Entry<CreasePattern, Set<String>> entry : candidates.entrySet()) {
+                i++;
+                CreasePattern candidate = entry.getKey();
+                System.out.println("[creasy.debug.steps] candidate#" + i
+                        + " sources=" + String.join(", ", entry.getValue())
+                        + " creases=" + candidate.getCreases().size()
+                        + " points=" + candidate.getPoints().size());
+            }
+        }
+
         candidates.forEach((cp, sourcePatterns) -> {
             CreasePattern cp2 = new CreasePattern();
             cp.getCreases().forEach(cp2::addCrease);
@@ -148,8 +167,20 @@ public class ExtendedCreasePattern {
                     step.addSourcePattern(source);
                 }
                 steps.add(step);
+                if (DEBUG_STEPS) {
+                    System.out.println("[creasy.debug.steps] foldable=true sources=" + step.getSourcePatternsLabel()
+                            + " outCreases=" + cp2.getCreases().size()
+                            + " outPoints=" + cp2.getPoints().size());
+                }
+            } else if (DEBUG_STEPS) {
+                System.out.println("[creasy.debug.steps] foldable=false sources=" + String.join(", ", sourcePatterns)
+                        + " outCreases=" + cp2.getCreases().size()
+                        + " outPoints=" + cp2.getPoints().size());
             }
         });
+        if (DEBUG_STEPS) {
+            System.out.println("[creasy.debug.steps] possibleSteps=" + steps.size());
+        }
         return steps;
     }
 
