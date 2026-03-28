@@ -19,6 +19,8 @@ This algorithm is based on the works of
 
 and their paper "**Generating Folding Sequences from Crease Patterns of Flat-Foldable Origami**".
 
+> If you are using MacOS, please refer to [](readme_apple_silicon.md) for guidance.
+
 <img src="images/app.png" width="75%" height="75%"/>
 
 *(Creasy after importing a crease pattern, gui elements are explained below)*
